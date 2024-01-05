@@ -4,9 +4,10 @@ import BuildForm from "./components/build-form";
 import { BuildParams, LHRParams, Run, Statistic } from "./models";
 import LHRForm from "./components/lhr-form";
 import Statistics from "./components/statistics";
+import { getRuns } from "./client";
 
 export default function Page() {
-  const [build, setBuild] = useState<BuildParams>({
+  const [buildParams, setBuildParams] = useState<BuildParams>({
     host: "portal.lh.appsource.azure.com",
     project: "2cbe9c48-7f26-4e44-8752-bc945bd6fcf8",
     buildId: "c410d154-41f8-43ee-b8d4-33536997f79a",
@@ -23,16 +24,10 @@ export default function Page() {
   const [runs, setRuns] = useState<Run[]>([]);
   const [statistics, setStatistics] = useState<Statistic[]>([]);
 
-  async function getRuns() {
+  async function loadRuns() {
     setLoading(true);
 
-    const { host, project, buildId } = build;
-    const params = new URLSearchParams({ host, project, build: buildId });
-    const url = `/runs/api?${params}`;
-
-    const response = await fetch(url);
-
-    const runs = await response.json();
+    const runs = await getRuns(buildParams);
 
     setRuns(runs);
 
@@ -65,10 +60,10 @@ export default function Page() {
       <div className="flex gap-12">
         <div className="inline-flex flex-col gap-12">
           <BuildForm
-            build={build}
+            build={buildParams}
             loading={loading}
-            onChange={setBuild}
-            onSubmit={getRuns}
+            onChange={setBuildParams}
+            onSubmit={loadRuns}
           />
           {runs.length ? (
             <LHRForm
