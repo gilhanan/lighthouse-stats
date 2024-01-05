@@ -14,7 +14,7 @@ export default function TextField({ label, value, onChange }: Props) {
       <input
         type="text"
         id={id}
-        className="w-full"
+        className="w-full rounded-md"
         value={value}
         onChange={({ target: { value } }) => onChange(value)}
       />

@@ -69,6 +69,7 @@ export default function Page() {
           {runs.length ? (
             <LHRForm
               lhrParams={lhrParams}
+              audits={Object.keys(runs[0]?.lhr?.audits || {})}
               loading={loading}
               onChange={setLHRParams}
               onCalculate={calculateRuns}

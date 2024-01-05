@@ -33,7 +33,7 @@ export default function Select<T>({
       </label>
       <select
         id={id}
-        className="w-full"
+        className="w-full rounded-md"
         value={selected?.[idField]?.toString()}
         onChange={({ target: { value } }) =>
           onChange(options.find((project) => project[idField] === value)!)
