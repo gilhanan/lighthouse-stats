@@ -1,38 +1,24 @@
 "use client";
 import { useEffect, useState } from "react";
-import BuildForm from "./components/build-form";
-import {
-  Build,
-  BuildParams,
-  LHRParams,
-  Project,
-  Run,
-  Statistic,
-} from "./models";
-import LHRForm from "./components/lhr-form";
-import Statistics from "./components/statistics";
+import { Build, BuildParams, RunsParams, Project, Run, Row } from "./models";
 import { getBuilds, getProjects, getRuns } from "./client";
+import BuildForm from "./components/build-form";
+import RunsForm from "./components/runs-form";
+import Table from "../components/table";
 
 export default function Page() {
-  const [buildParams, setBuildParams] = useState<BuildParams>({
+  const [buildForm, setBuildForm] = useState<BuildParams>({
     host: "portal.lh.appsource.azure.com",
   });
-  const [lhrParams, setLHRParams] = useState<LHRParams>({
-    audits: [
-      "page-load-time-response-start",
-      "page-load-time-response-end",
-      "page-load-time-assets-loaded",
-      "page-load-time-app-rendered",
-    ],
-    categories: ["pageLoadTime"],
-  });
+  const [runsParams, setRunsParams] = useState<RunsParams>({});
   const [loading, setLoading] = useState(false);
   const [projects, setProjects] = useState<Project[]>([]);
   const [builds, setBuilds] = useState<Build[]>([]);
   const [runs, setRuns] = useState<Run[]>([]);
-  const [statistics, setStatistics] = useState<Statistic[]>([]);
+  const [runsRows, setRunsRows] = useState<Row[]>([]);
 
-  const { host, project, build } = buildParams;
+  const { host, project, build } = buildForm;
+  const { category } = runsParams;
 
   useEffect(() => {
     async function loadProjects() {
@@ -79,23 +65,45 @@ export default function Page() {
   }
 
   function calculateRuns() {
-    const statistics = runs.map(
+    const rows = runs.map(
       ({
         id,
+        representative,
         lhr: {
           environment: { benchmarkIndex },
           audits,
+          categories,
         },
       }) => {
+        const currentCategory = category && categories[category.id];
         return {
           id,
-          benchmarkIndex,
-          audits: lhrParams.audits.map((audit) => audits[audit]),
-        };
+          cells: [
+            { label: "Representative", value: representative },
+            { label: "Benchmark", value: benchmarkIndex },
+            ...(currentCategory
+              ? [
+                  {
+                    label: currentCategory.title,
+                    value: currentCategory.score,
+                  },
+                  ...currentCategory.auditRefs
+                    .filter(({ weight }) => weight)
+                    .map(({ id }) => {
+                      const audit = audits[id];
+                      return {
+                        label: audit.title.replace(" time is too slow", ""), // TODO: remove this hack
+                        value: audit.score,
+                      };
+                    }),
+                ]
+              : []),
+          ],
+        } satisfies Row;
       }
     );
 
-    setStatistics(statistics);
+    setRunsRows(rows);
   }
 
   return (
@@ -104,24 +112,23 @@ export default function Page() {
       <div className="flex gap-12">
         <div className="flex flex-col gap-12">
           <BuildForm
-            form={buildParams}
+            form={buildForm}
             projects={projects}
             builds={builds}
             loading={loading}
-            onChange={setBuildParams}
+            onChange={setBuildForm}
             onSubmit={loadRuns}
           />
           {runs.length ? (
-            <LHRForm
-              lhrParams={lhrParams}
-              audits={Object.keys(runs[0]?.lhr?.audits || {})}
-              categories={Object.keys(runs[0]?.lhr?.categories || {})}
-              onChange={setLHRParams}
+            <RunsForm
+              form={runsParams}
+              categories={Object.values(runs[0].lhr?.categories || {})}
+              onChange={setRunsParams}
               onCalculate={calculateRuns}
             />
           ) : null}
         </div>
-        {statistics.length ? <Statistics statistics={statistics} /> : null}
+        {runsRows.length ? <Table rows={runsRows} title={"Runs"} /> : null}
       </div>
     </div>
   );

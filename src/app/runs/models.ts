@@ -19,8 +19,8 @@ export interface Build extends RawBuild {
   name: string;
 }
 
-export interface LHRParams {
-  audits: string[];
+export interface RunsParams {
+  category?: Category;
 }
 
 export interface RawRun {
@@ -39,19 +39,31 @@ interface Audit {
   numericValue: number;
 }
 
+export interface Category {
+  id: string;
+  title: string;
+  score: number;
+  auditRefs: { id: string; weight: string }[];
+}
+
 export interface LHR {
   environment: {
     benchmarkIndex: number;
   };
   audits: Record<string, Audit>;
+  categories: Record<string, Category>;
 }
 
 export type Run = RawRun & {
   lhr: LHR;
 };
 
-export interface Statistic {
+export interface Cell {
+  label: string;
+  value: unknown;
+}
+
+export interface Row {
   id: string;
-  benchmarkIndex: number;
-  audits: Audit[];
+  cells: Cell[];
 }
