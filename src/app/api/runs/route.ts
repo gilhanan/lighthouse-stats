@@ -1,4 +1,4 @@
-import { RawRun, Run } from "../models";
+import { RawRun, Run } from "../../runs/models";
 
 function parseRun(rawRun: RawRun): Run {
   return {

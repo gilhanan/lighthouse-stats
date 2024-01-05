@@ -1,7 +1,22 @@
 export interface BuildParams {
-  host: string;
-  project: string;
-  buildId: string;
+  host?: string;
+  project?: Project;
+  build?: Build;
+}
+
+export interface Project {
+  id: string;
+  name: string;
+}
+
+export interface RawBuild {
+  id: string;
+  branch: string;
+  commitMessage: string;
+}
+
+export interface Build extends RawBuild {
+  name: string;
 }
 
 export interface LHRParams {

@@ -9,8 +9,6 @@ import { getRuns } from "./client";
 export default function Page() {
   const [buildParams, setBuildParams] = useState<BuildParams>({
     host: "portal.lh.appsource.azure.com",
-    project: "2cbe9c48-7f26-4e44-8752-bc945bd6fcf8",
-    buildId: "c410d154-41f8-43ee-b8d4-33536997f79a",
   });
   const [lhrParams, setLHRParams] = useState<LHRParams>({
     audits: [
@@ -24,10 +22,14 @@ export default function Page() {
   const [runs, setRuns] = useState<Run[]>([]);
   const [statistics, setStatistics] = useState<Statistic[]>([]);
 
+  const { host, project, build } = buildParams;
+
   async function loadRuns() {
+    if (!host || !project || !build) return;
+
     setLoading(true);
 
-    const runs = await getRuns(buildParams);
+    const runs = await getRuns({ host, project: project.id, build: build.id });
 
     setRuns(runs);
 
@@ -58,10 +60,9 @@ export default function Page() {
     <div className="flex flex-col gap-8">
       <h1 className="text-xl font-semibold">Lighthouse statistics</h1>
       <div className="flex gap-12">
-        <div className="inline-flex flex-col gap-12">
+        <div className="flex flex-col gap-12">
           <BuildForm
-            build={buildParams}
-            loading={loading}
+            buildParams={buildParams}
             onChange={setBuildParams}
             onSubmit={loadRuns}
           />
