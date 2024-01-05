@@ -1,10 +1,17 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import BuildForm from "./components/build-form";
-import { BuildParams, LHRParams, Run, Statistic } from "./models";
+import {
+  Build,
+  BuildParams,
+  LHRParams,
+  Project,
+  Run,
+  Statistic,
+} from "./models";
 import LHRForm from "./components/lhr-form";
 import Statistics from "./components/statistics";
-import { getRuns } from "./client";
+import { getBuilds, getProjects, getRuns } from "./client";
 
 export default function Page() {
   const [buildParams, setBuildParams] = useState<BuildParams>({
@@ -17,12 +24,47 @@ export default function Page() {
       "page-load-time-assets-loaded",
       "page-load-time-app-rendered",
     ],
+    categories: ["pageLoadTime"],
   });
   const [loading, setLoading] = useState(false);
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [builds, setBuilds] = useState<Build[]>([]);
   const [runs, setRuns] = useState<Run[]>([]);
   const [statistics, setStatistics] = useState<Statistic[]>([]);
 
   const { host, project, build } = buildParams;
+
+  useEffect(() => {
+    async function loadProjects() {
+      if (!host) return;
+
+      setLoading(true);
+
+      const projects = await getProjects({ host });
+
+      setProjects(projects);
+
+      setLoading(false);
+    }
+
+    loadProjects();
+  }, [host]);
+
+  useEffect(() => {
+    async function loadBuilds() {
+      if (!host || !project) return;
+
+      setLoading(true);
+
+      const builds = await getBuilds({ host, project: project.id });
+
+      setBuilds(builds);
+
+      setLoading(false);
+    }
+
+    loadBuilds();
+  }, [host, project]);
 
   async function loadRuns() {
     if (!host || !project || !build) return;
@@ -62,7 +104,10 @@ export default function Page() {
       <div className="flex gap-12">
         <div className="flex flex-col gap-12">
           <BuildForm
-            buildParams={buildParams}
+            form={buildParams}
+            projects={projects}
+            builds={builds}
+            loading={loading}
             onChange={setBuildParams}
             onSubmit={loadRuns}
           />
@@ -70,7 +115,7 @@ export default function Page() {
             <LHRForm
               lhrParams={lhrParams}
               audits={Object.keys(runs[0]?.lhr?.audits || {})}
-              loading={loading}
+              categories={Object.keys(runs[0]?.lhr?.categories || {})}
               onChange={setLHRParams}
               onCalculate={calculateRuns}
             />

@@ -4,7 +4,6 @@ import { LHRParams } from "../models";
 interface Props {
   lhrParams: LHRParams;
   audits: string[];
-  loading: boolean;
   onChange: (lhrParams: LHRParams) => void;
   onCalculate: () => void;
 }
@@ -12,7 +11,6 @@ interface Props {
 export default function LHRForm({
   lhrParams,
   audits,
-  loading,
   onChange,
   onCalculate,
 }: Props) {
@@ -29,7 +27,6 @@ export default function LHRForm({
         type="button"
         className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
         onClick={onCalculate}
-        disabled={loading}
       >
         Calculate
       </button>

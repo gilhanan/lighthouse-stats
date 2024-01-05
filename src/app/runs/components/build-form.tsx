@@ -1,52 +1,25 @@
-import { useEffect, useState } from "react";
 import { Build, BuildParams, Project } from "../models";
-import { getBuilds, getProjects } from "../client";
 import Select from "@/app/components/select";
 import TextField from "@/app/components/text-field";
 
 interface Props {
-  buildParams: BuildParams;
+  form: BuildParams;
+  builds: Build[];
+  projects: Project[];
+  loading: boolean;
   onChange: (buildParams: BuildParams) => void;
   onSubmit: () => void;
 }
 
-export default function BuildForm({ buildParams, onChange, onSubmit }: Props) {
-  const { host, project, build } = buildParams;
-  const [projects, setProjects] = useState<Project[]>([]);
-  const [builds, setBuilds] = useState<Build[]>([]);
-  const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    async function loadProjects() {
-      if (!host) return;
-
-      setLoading(true);
-
-      const projects = await getProjects({ host });
-
-      setProjects(projects);
-
-      setLoading(false);
-    }
-
-    loadProjects();
-  }, [host]);
-
-  useEffect(() => {
-    async function loadBuilds() {
-      if (!host || !project) return;
-
-      setLoading(true);
-
-      const builds = await getBuilds({ host, project: project.id });
-
-      setBuilds(builds);
-
-      setLoading(false);
-    }
-
-    loadBuilds();
-  }, [host, project]);
+export default function BuildForm({
+  form,
+  builds,
+  projects,
+  loading,
+  onChange,
+  onSubmit,
+}: Props) {
+  const { host, project, build } = form;
 
   return (
     <div className="flex flex-col gap-2">
@@ -55,7 +28,7 @@ export default function BuildForm({ buildParams, onChange, onSubmit }: Props) {
         <TextField
           label="Host"
           value={host}
-          onChange={(host) => onChange({ ...buildParams, host })}
+          onChange={(host) => onChange({ ...form, host })}
         />
         <Select
           label="Project"
@@ -63,7 +36,7 @@ export default function BuildForm({ buildParams, onChange, onSubmit }: Props) {
           options={projects}
           idField="id"
           nameField="name"
-          onChange={(project) => onChange({ ...buildParams, project })}
+          onChange={(project) => onChange({ ...form, project })}
         />
         <Select
           label="Build"
@@ -71,15 +44,15 @@ export default function BuildForm({ buildParams, onChange, onSubmit }: Props) {
           options={builds}
           idField="id"
           nameField="name"
-          onChange={(build) => onChange({ ...buildParams, build })}
+          onChange={(build) => onChange({ ...form, build })}
         />
       </div>
       <button
         className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-        disabled={loading}
+        disabled={loading || !host || !project || !build}
         onClick={onSubmit}
       >
-        Submit
+        {loading ? "Downloading" : "Submit"}
       </button>
     </div>
   );
