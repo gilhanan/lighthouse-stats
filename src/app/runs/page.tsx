@@ -71,7 +71,16 @@ export default function Page() {
       const branches = await getBranches({ host, project: project.id });
 
       setBranches(branches);
-      setBuildForm((form) => ({ ...form, branch: branches[0] }));
+      setBuildForm((form) => {
+        const isBranchExists = branches.some(
+          ({ branch }) => branch === form.branch?.branch
+        );
+        const baseBranch = branches.find(
+          ({ branch }) => branch === project.baseBranch
+        );
+        const branch = isBranchExists ? form.branch : baseBranch;
+        return { ...form, branch };
+      });
 
       setLoading(false);
     }
@@ -113,7 +122,11 @@ export default function Page() {
       });
 
       setURLs(urls);
-      setBuildForm((form) => ({ ...form, url: urls[0] }));
+      setBuildForm((form) => {
+        const isURLExists = urls.some(({ url }) => url === form.url?.url);
+        const url = isURLExists ? form.url : urls[0];
+        return { ...form, url };
+      });
 
       setLoading(false);
     }
@@ -139,7 +152,13 @@ export default function Page() {
       const categories = Object.values(runs[0]?.lhr?.categories || {});
 
       setCategories(categories);
-      setRunsForm((form) => ({ ...form, category: categories[0] }));
+      setRunsForm((form) => {
+        const isCategoryExists = categories.some(
+          ({ id }) => id === form.category?.id
+        );
+        const category = isCategoryExists ? form.category : categories[0];
+        return { ...form, category };
+      });
 
       setLoading(false);
     }

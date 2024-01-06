@@ -29,6 +29,7 @@ export interface BuildFormState {
 export interface Project {
   id: string;
   name: string;
+  baseBranch: string;
 }
 
 export interface Branch {
