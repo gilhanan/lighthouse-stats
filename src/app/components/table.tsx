@@ -22,8 +22,8 @@ export default function Table({ title, rows }: Props) {
         <tbody>
           {rows.map(({ id, cells }) => (
             <tr key={id}>
-              {cells.map(({ value }) => (
-                <td key="score" className="border px-4 py-2">
+              {cells.map(({ label, value }) => (
+                <td key={`${id}-${label}`} className="border px-4 py-2">
                   {value?.toString()}
                 </td>
               ))}

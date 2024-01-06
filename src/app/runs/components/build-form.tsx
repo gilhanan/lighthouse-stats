@@ -1,13 +1,15 @@
-import { Build, BuildParams, Project } from "../models";
+import { Branch, Build, BuildFormState, Project, URL } from "../models";
 import Select from "@/app/components/select";
 import TextField from "@/app/components/text-field";
 
 interface Props {
-  form: BuildParams;
+  form: BuildFormState;
   builds: Build[];
   projects: Project[];
+  branches: Branch[];
+  urls: URL[];
   loading: boolean;
-  onChange: (buildParams: BuildParams) => void;
+  onChange: (buildParams: BuildFormState) => void;
   onSubmit: () => void;
 }
 
@@ -15,11 +17,13 @@ export default function BuildForm({
   form,
   builds,
   projects,
+  branches,
+  urls,
   loading,
   onChange,
   onSubmit,
 }: Props) {
-  const { host, project, build } = form;
+  const { host, project, url, branch, build } = form;
 
   return (
     <div className="flex flex-col gap-2">
@@ -39,12 +43,28 @@ export default function BuildForm({
           onChange={(project) => onChange({ ...form, project })}
         />
         <Select
+          label="Branch"
+          selected={branch}
+          options={branches}
+          idField="branch"
+          nameField="branch"
+          onChange={(branch) => onChange({ ...form, branch })}
+        />
+        <Select
           label="Build"
           selected={build}
           options={builds}
           idField="id"
           nameField="name"
           onChange={(build) => onChange({ ...form, build })}
+        />
+        <Select
+          label="URL"
+          selected={url}
+          options={urls}
+          idField="url"
+          nameField="url"
+          onChange={(url) => onChange({ ...form, url })}
         />
       </div>
       <button

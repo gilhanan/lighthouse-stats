@@ -1,12 +1,42 @@
-export interface BuildParams {
+export interface HostParams {
+  host: string;
+}
+
+export interface ProjectParams extends HostParams {
+  project: string;
+}
+
+export interface BranchParams extends ProjectParams {
+  branch: string;
+}
+
+export interface BuildParams extends ProjectParams {
+  build: string;
+}
+
+export interface RunsParams extends BuildParams {
+  url: string;
+}
+
+export interface BuildFormState {
   host?: string;
   project?: Project;
+  url?: URL;
+  branch?: Branch;
   build?: Build;
 }
 
 export interface Project {
   id: string;
   name: string;
+}
+
+export interface Branch {
+  branch: string;
+}
+
+export interface URL {
+  url: string;
 }
 
 export interface RawBuild {
@@ -19,7 +49,7 @@ export interface Build extends RawBuild {
   name: string;
 }
 
-export interface RunsParams {
+export interface RunsFormState {
   category?: Category;
 }
 

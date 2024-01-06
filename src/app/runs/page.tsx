@@ -1,23 +1,41 @@
 "use client";
 import { useEffect, useState } from "react";
-import { Build, BuildParams, RunsParams, Project, Run, Row } from "./models";
-import { getBuilds, getProjects, getRuns } from "./client";
+import {
+  Build,
+  BuildFormState,
+  RunsFormState,
+  Project,
+  Run,
+  Row,
+  Branch,
+  URL,
+} from "./models";
+import {
+  getBranches,
+  getBuilds,
+  getProjects,
+  getRuns,
+  getURLs,
+} from "./client";
 import BuildForm from "./components/build-form";
 import RunsForm from "./components/runs-form";
 import Table from "../components/table";
+import { calculateRuns } from "./utils";
 
 export default function Page() {
-  const [buildForm, setBuildForm] = useState<BuildParams>({
+  const [buildForm, setBuildForm] = useState<BuildFormState>({
     host: "portal.lh.appsource.azure.com",
   });
-  const [runsParams, setRunsParams] = useState<RunsParams>({});
+  const [runsParams, setRunsParams] = useState<RunsFormState>({});
   const [loading, setLoading] = useState(false);
   const [projects, setProjects] = useState<Project[]>([]);
+  const [urls, setURLs] = useState<URL[]>([]);
+  const [branches, setBranches] = useState<Branch[]>([]);
   const [builds, setBuilds] = useState<Build[]>([]);
   const [runs, setRuns] = useState<Run[]>([]);
   const [runsRows, setRunsRows] = useState<Row[]>([]);
 
-  const { host, project, build } = buildForm;
+  const { host, project, url, branch, build } = buildForm;
   const { category } = runsParams;
 
   useEffect(() => {
@@ -37,12 +55,52 @@ export default function Page() {
   }, [host]);
 
   useEffect(() => {
-    async function loadBuilds() {
+    async function loadURLs() {
+      if (!host || !project || !build) return;
+
+      setLoading(true);
+
+      const urls = await getURLs({
+        host,
+        project: project.id,
+        build: build.id,
+      });
+
+      setURLs(urls);
+
+      setLoading(false);
+    }
+
+    loadURLs();
+  }, [host, project, build]);
+
+  useEffect(() => {
+    async function loadBranches() {
       if (!host || !project) return;
 
       setLoading(true);
 
-      const builds = await getBuilds({ host, project: project.id });
+      const branches = await getBranches({ host, project: project.id });
+
+      setBranches(branches);
+
+      setLoading(false);
+    }
+
+    loadBranches();
+  }, [host, project]);
+
+  useEffect(() => {
+    async function loadBuilds() {
+      if (!host || !project || !branch) return;
+
+      setLoading(true);
+
+      const builds = await getBuilds({
+        host,
+        project: project.id,
+        branch: branch.branch,
+      });
 
       setBuilds(builds);
 
@@ -50,60 +108,28 @@ export default function Page() {
     }
 
     loadBuilds();
-  }, [host, project]);
+  }, [host, project, branch]);
 
   async function loadRuns() {
-    if (!host || !project || !build) return;
+    if (!host || !project || !build || !url) return;
 
     setLoading(true);
 
-    const runs = await getRuns({ host, project: project.id, build: build.id });
+    const runs = await getRuns({
+      host,
+      project: project.id,
+      build: build.id,
+      url: url.url,
+    });
 
     setRuns(runs);
 
     setLoading(false);
   }
 
-  function calculateRuns() {
-    const rows = runs.map(
-      ({
-        id,
-        representative,
-        lhr: {
-          environment: { benchmarkIndex },
-          audits,
-          categories,
-        },
-      }) => {
-        const currentCategory = category && categories[category.id];
-        return {
-          id,
-          cells: [
-            { label: "Representative", value: representative },
-            { label: "Benchmark", value: benchmarkIndex },
-            ...(currentCategory
-              ? [
-                  {
-                    label: currentCategory.title,
-                    value: currentCategory.score,
-                  },
-                  ...currentCategory.auditRefs
-                    .filter(({ weight }) => weight)
-                    .map(({ id }) => {
-                      const audit = audits[id];
-                      return {
-                        label: audit.title.replace(" time is too slow", ""), // TODO: remove this hack
-                        value: audit.score,
-                      };
-                    }),
-                ]
-              : []),
-          ],
-        } satisfies Row;
-      }
-    );
-
-    setRunsRows(rows);
+  function onRunsSubmit() {
+    if (!category) return;
+    setRunsRows(calculateRuns({ runs, category }));
   }
 
   return (
@@ -114,6 +140,8 @@ export default function Page() {
           <BuildForm
             form={buildForm}
             projects={projects}
+            urls={urls}
+            branches={branches}
             builds={builds}
             loading={loading}
             onChange={setBuildForm}
@@ -124,7 +152,7 @@ export default function Page() {
               form={runsParams}
               categories={Object.values(runs[0].lhr?.categories || {})}
               onChange={setRunsParams}
-              onCalculate={calculateRuns}
+              onCalculate={onRunsSubmit}
             />
           ) : null}
         </div>

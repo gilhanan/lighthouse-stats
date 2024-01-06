@@ -1,11 +1,4 @@
-import { Project } from "@/app/runs/models";
-
-async function getProjects({ host }: { host: string }): Promise<Project[]> {
-  const url = `https://${host}/v1/projects`;
-  const response = await fetch(url);
-  const projects = (await response.json()) as Project[];
-  return projects;
-}
+import { getProjects } from "../lhci-server-client";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);

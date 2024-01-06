@@ -1,10 +1,10 @@
-import { Category, RunsParams } from "../models";
+import { Category, RunsFormState } from "../models";
 import Select from "@/app/components/select";
 
 interface Props {
-  form: RunsParams;
+  form: RunsFormState;
   categories: Category[];
-  onChange: (form: RunsParams) => void;
+  onChange: (form: RunsFormState) => void;
   onCalculate: () => void;
 }
 
