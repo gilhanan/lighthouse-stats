@@ -24,7 +24,7 @@ export default function Select<T>({
   return (
     <div>
       <label htmlFor={id} className="block">
-        {label}
+        {label}:
       </label>
       <select
         id={id}
