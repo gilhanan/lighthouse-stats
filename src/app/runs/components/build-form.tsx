@@ -8,9 +8,7 @@ interface Props {
   projects: Project[];
   branches: Branch[];
   urls: URL[];
-  loading: boolean;
   onChange: (buildParams: BuildFormState) => void;
-  onSubmit: () => void;
 }
 
 export default function BuildForm({
@@ -19,9 +17,7 @@ export default function BuildForm({
   projects,
   branches,
   urls,
-  loading,
   onChange,
-  onSubmit,
 }: Props) {
   const { host, project, url, branch, build } = form;
 
@@ -67,13 +63,6 @@ export default function BuildForm({
           onChange={(url) => onChange({ ...form, url })}
         />
       </div>
-      <button
-        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-        disabled={loading || !host || !project || !build}
-        onClick={onSubmit}
-      >
-        {loading ? "Downloading" : "Submit"}
-      </button>
     </div>
   );
 }

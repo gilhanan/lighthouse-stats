@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useId } from "react";
+import { useId } from "react";
 
 interface Props<T> {
   label: string;
@@ -20,11 +20,6 @@ export default function Select<T>({
   options,
 }: Props<T>) {
   const id = useId();
-
-  useEffect(() => {
-    if (options.length === 0 || selected) return;
-    onChange(options[0]);
-  }, [options, selected, onChange]);
 
   return (
     <div>

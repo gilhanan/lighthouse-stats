@@ -9,6 +9,7 @@ import {
   Row,
   Branch,
   URL,
+  Category,
 } from "./models";
 import {
   getBranches,
@@ -26,17 +27,23 @@ export default function Page() {
   const [buildForm, setBuildForm] = useState<BuildFormState>({
     host: "portal.lh.appsource.azure.com",
   });
-  const [runsParams, setRunsParams] = useState<RunsFormState>({});
+  const [runsForm, setRunsForm] = useState<RunsFormState>({});
   const [loading, setLoading] = useState(false);
   const [projects, setProjects] = useState<Project[]>([]);
   const [urls, setURLs] = useState<URL[]>([]);
   const [branches, setBranches] = useState<Branch[]>([]);
   const [builds, setBuilds] = useState<Build[]>([]);
   const [runs, setRuns] = useState<Run[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
   const [runsRows, setRunsRows] = useState<Row[]>([]);
 
   const { host, project, url, branch, build } = buildForm;
-  const { category } = runsParams;
+  const { category } = runsForm;
+
+  useEffect(() => {
+    setRuns([]);
+    setRunsRows([]);
+  }, [host, project, url, branch, build]);
 
   useEffect(() => {
     async function loadProjects() {
@@ -47,32 +54,13 @@ export default function Page() {
       const projects = await getProjects({ host });
 
       setProjects(projects);
+      setBuildForm((form) => ({ ...form, project: projects[0] }));
 
       setLoading(false);
     }
 
     loadProjects();
   }, [host]);
-
-  useEffect(() => {
-    async function loadURLs() {
-      if (!host || !project || !build) return;
-
-      setLoading(true);
-
-      const urls = await getURLs({
-        host,
-        project: project.id,
-        build: build.id,
-      });
-
-      setURLs(urls);
-
-      setLoading(false);
-    }
-
-    loadURLs();
-  }, [host, project, build]);
 
   useEffect(() => {
     async function loadBranches() {
@@ -83,6 +71,7 @@ export default function Page() {
       const branches = await getBranches({ host, project: project.id });
 
       setBranches(branches);
+      setBuildForm((form) => ({ ...form, branch: branches[0] }));
 
       setLoading(false);
     }
@@ -103,6 +92,7 @@ export default function Page() {
       });
 
       setBuilds(builds);
+      setBuildForm((form) => ({ ...form, build: builds[0] }));
 
       setLoading(false);
     }
@@ -110,27 +100,56 @@ export default function Page() {
     loadBuilds();
   }, [host, project, branch]);
 
-  async function loadRuns() {
-    if (!host || !project || !build || !url) return;
+  useEffect(() => {
+    async function loadURLs() {
+      if (!host || !project || !build) return;
 
-    setLoading(true);
+      setLoading(true);
 
-    const runs = await getRuns({
-      host,
-      project: project.id,
-      build: build.id,
-      url: url.url,
-    });
+      const urls = await getURLs({
+        host,
+        project: project.id,
+        build: build.id,
+      });
 
-    setRuns(runs);
+      setURLs(urls);
+      setBuildForm((form) => ({ ...form, url: urls[0] }));
 
-    setLoading(false);
-  }
+      setLoading(false);
+    }
 
-  function onRunsSubmit() {
+    loadURLs();
+  }, [host, project, build]);
+
+  useEffect(() => {
+    async function loadRuns() {
+      if (!host || !project || !build || !url) return;
+
+      setLoading(true);
+
+      const runs = await getRuns({
+        host,
+        project: project.id,
+        build: build.id,
+        url: url.url,
+      });
+
+      setRuns(runs);
+
+      const categories = Object.values(runs[0]?.lhr?.categories || {});
+
+      setCategories(categories);
+      setRunsForm((form) => ({ ...form, category: categories[0] }));
+
+      setLoading(false);
+    }
+    loadRuns();
+  }, [host, project, build, url]);
+
+  useEffect(() => {
     if (!category) return;
     setRunsRows(calculateRuns({ runs, category }));
-  }
+  }, [runs, category]);
 
   return (
     <div className="flex flex-col gap-8">
@@ -143,16 +162,13 @@ export default function Page() {
             urls={urls}
             branches={branches}
             builds={builds}
-            loading={loading}
             onChange={setBuildForm}
-            onSubmit={loadRuns}
           />
           {runs.length ? (
             <RunsForm
-              form={runsParams}
-              categories={Object.values(runs[0].lhr?.categories || {})}
-              onChange={setRunsParams}
-              onCalculate={onRunsSubmit}
+              form={runsForm}
+              categories={categories}
+              onChange={setRunsForm}
             />
           ) : null}
         </div>
