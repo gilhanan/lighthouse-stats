@@ -78,7 +78,7 @@ export default function Page() {
         const baseBranch = branches.find(
           ({ branch }) => branch === project.baseBranch
         );
-        const branch = isBranchExists ? form.branch : baseBranch;
+        const branch = isBranchExists ? form.branch : baseBranch || branches[0];
         return { ...form, branch };
       });
 
