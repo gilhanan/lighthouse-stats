@@ -25,7 +25,7 @@ import { calculateRuns } from "./utils";
 
 export default function Page() {
   const [buildForm, setBuildForm] = useState<BuildFormState>({
-    host: "portal.lh.appsource.azure.com",
+    host: "https://portal.lh.appsource.azure.com",
   });
   const [runsForm, setRunsForm] = useState<RunsFormState>({});
   const [loading, setLoading] = useState(false);

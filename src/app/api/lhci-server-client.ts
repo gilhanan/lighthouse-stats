@@ -14,7 +14,7 @@ import {
 } from "../runs/models";
 
 function lighthouseServer({ host }: HostParams): string {
-  return `https://${host}/v1`;
+  return `${host}/v1`;
 }
 
 function lighthouseServerProjects({ host }: HostParams): string {
