@@ -1,0 +1,119 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders homepage unchanged 1`] = `
+<div>
+  <thead>
+    <tr>
+      <th
+        class="text-center border p-2 bg-gray-50"
+        colspan="1"
+        rowspan="3"
+      >
+        Simple
+      </th>
+      <th
+        class="text-center border p-2 bg-gray-50"
+        colspan="2"
+        rowspan="1"
+      >
+        Two animals
+      </th>
+      <th
+        class="text-center border p-2 bg-gray-50"
+        colspan="3"
+        rowspan="1"
+      >
+        Three vegetables
+      </th>
+      <th
+        class="text-center border p-2 bg-gray-50"
+        colspan="4"
+        rowspan="1"
+      >
+        Three levels
+      </th>
+    </tr>
+    <tr>
+      <th
+        class="text-center border p-2 bg-gray-50"
+        colspan="1"
+        rowspan="2"
+      >
+        Cat
+      </th>
+      <th
+        class="text-center border p-2 bg-gray-50"
+        colspan="1"
+        rowspan="2"
+      >
+        Dog
+      </th>
+      <th
+        class="text-center border p-2 bg-gray-50"
+        colspan="1"
+        rowspan="2"
+      >
+        Tomato
+      </th>
+      <th
+        class="text-center border p-2 bg-gray-50"
+        colspan="1"
+        rowspan="2"
+      >
+        Potato
+      </th>
+      <th
+        class="text-center border p-2 bg-gray-50"
+        colspan="1"
+        rowspan="2"
+      >
+        Carrot
+      </th>
+      <th
+        class="text-center border p-2 bg-gray-50"
+        colspan="2"
+        rowspan="1"
+      >
+        First
+      </th>
+      <th
+        class="text-center border p-2 bg-gray-50"
+        colspan="2"
+        rowspan="1"
+      >
+        Second
+      </th>
+    </tr>
+    <tr>
+      <th
+        class="text-center border p-2 bg-gray-50"
+        colspan="1"
+        rowspan="1"
+      >
+        One
+      </th>
+      <th
+        class="text-center border p-2 bg-gray-50"
+        colspan="1"
+        rowspan="1"
+      >
+        Two
+      </th>
+      <th
+        class="text-center border p-2 bg-gray-50"
+        colspan="1"
+        rowspan="1"
+      >
+        Three
+      </th>
+      <th
+        class="text-center border p-2 bg-gray-50"
+        colspan="1"
+        rowspan="1"
+      >
+        Four
+      </th>
+    </tr>
+  </thead>
+</div>
+`;
