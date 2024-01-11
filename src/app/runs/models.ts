@@ -88,13 +88,3 @@ export interface LHR {
 export type Run = RawRun & {
   lhr: LHR;
 };
-
-export interface Cell {
-  label: string;
-  value: unknown;
-}
-
-export interface Row {
-  id: string;
-  cells: Cell[];
-}

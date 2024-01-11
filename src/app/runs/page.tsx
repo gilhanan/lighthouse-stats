@@ -6,7 +6,6 @@ import {
   RunsFormState,
   Project,
   Run,
-  Row,
   Branch,
   URL,
   Category,
@@ -20,8 +19,8 @@ import {
 } from "./client";
 import BuildForm from "./components/build-form";
 import RunsForm from "./components/runs-form";
-import Table from "../components/table";
 import { calculateRuns } from "./utils";
+import { Row, Table } from "../components/table";
 
 export default function Page() {
   const [buildForm, setBuildForm] = useState<BuildFormState>({

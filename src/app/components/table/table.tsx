@@ -1,4 +1,6 @@
-import { Cell, Row } from "../runs/models";
+import { Cell, Row } from "./models";
+import { TableBody } from "./table-body";
+import { TableHead } from "./table-head";
 
 interface Props {
   title: string;
@@ -53,41 +55,15 @@ function getCellIndexToMediansRowIndex(rows: Row[]): {
   }, {});
 }
 
-export default function Table({ title, rows }: Props) {
+export function Table({ title, rows }: Props) {
   const cellIndexToMediansRowIndex = getCellIndexToMediansRowIndex(rows);
 
   return (
     <div className="inline-flex flex-col gap-4">
       <h2 className="text-lg font-semibold">{title}</h2>
       <table className="table-auto">
-        <thead>
-          <tr>
-            {rows[0].cells.map(({ label }) => (
-              <th key={label} className="px-4 py-2">
-                {label}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {rows.map(({ id, cells }, rowIndex) => (
-            <tr key={id}>
-              {cells.map(({ label, value }, cellIndex) => {
-                const className = `border px-4 py-2 ${
-                  rowIndex === cellIndexToMediansRowIndex[cellIndex]
-                    ? "bg-green-200"
-                    : ""
-                }`;
-
-                return (
-                  <td key={`${id}-${label}`} className={className}>
-                    {value?.toString()}
-                  </td>
-                );
-              })}
-            </tr>
-          ))}
-        </tbody>
+        <TableHead cells={rows[0].cells} />
+        <TableBody rows={rows} />
       </table>
     </div>
   );
