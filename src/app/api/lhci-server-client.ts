@@ -3,7 +3,6 @@ import {
   Project,
   ProjectParams,
   Branch,
-  RawBuild,
   Build,
   BranchParams,
   RawRun,
@@ -79,12 +78,7 @@ export async function getBranches(params: ProjectParams): Promise<Branch[]> {
 export async function getBuilds(params: BranchParams): Promise<Build[]> {
   const url = lighthouseServerBuilds(params);
   const response = await fetch(url);
-  const rawBuilds = (await response.json()) as RawBuild[];
-
-  const builds = rawBuilds.map((rawBuild) => ({
-    ...rawBuild,
-    name: `${rawBuild.branch} - ${rawBuild.commitMessage}`,
-  }));
+  const builds = (await response.json()) as Build[];
 
   return builds;
 }

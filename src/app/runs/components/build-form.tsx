@@ -51,7 +51,7 @@ export default function BuildForm({
           selected={build}
           options={builds}
           idField="id"
-          nameField="name"
+          nameField="commitMessage"
           onChange={(build) => onChange({ ...form, build })}
         />
         <Select

@@ -170,8 +170,8 @@ export default function Page() {
   return (
     <div className="flex flex-col gap-8">
       <h1 className="text-xl font-semibold">Lighthouse statistics</h1>
-      <div className="flex gap-12">
-        <div className="flex flex-col gap-12">
+      <div className="flex flex-wrap gap-12">
+        <div className="flex flex-col gap-12 flex-auto">
           <BuildForm
             form={buildForm}
             projects={projects}
@@ -188,7 +188,9 @@ export default function Page() {
             />
           ) : null}
         </div>
-        {runsRows.length ? <Table rows={runsRows} title={"Runs"} /> : null}
+        <div className="flex-auto">
+          {runsRows.length ? <Table rows={runsRows} title={"Runs"} /> : null}
+        </div>
       </div>
     </div>
   );

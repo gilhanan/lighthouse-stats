@@ -9,7 +9,7 @@ interface Props {
 
 export function Table({ title, rows }: Props) {
   return (
-    <div className="inline-flex flex-col gap-4">
+    <div className="flex flex-col gap-4">
       <h2 className="text-lg font-semibold">{title}</h2>
       <table className="table-auto">
         <TableHead cells={rows[0].cells} />

@@ -40,14 +40,10 @@ export interface URL {
   url: string;
 }
 
-export interface RawBuild {
+export interface Build {
   id: string;
   branch: string;
   commitMessage: string;
-}
-
-export interface Build extends RawBuild {
-  name: string;
 }
 
 export interface RunsFormState {
