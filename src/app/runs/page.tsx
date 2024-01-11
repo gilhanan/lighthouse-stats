@@ -23,9 +23,7 @@ import { calculateRuns } from "./utils";
 import { Row, Table } from "../components/table";
 
 export default function Page() {
-  const [buildForm, setBuildForm] = useState<BuildFormState>({
-    host: "https://portal.lh.appsource.azure.com",
-  });
+  const [buildForm, setBuildForm] = useState<BuildFormState>({});
   const [runsForm, setRunsForm] = useState<RunsFormState>({});
   const [loading, setLoading] = useState(false);
   const [projects, setProjects] = useState<Project[]>([]);
