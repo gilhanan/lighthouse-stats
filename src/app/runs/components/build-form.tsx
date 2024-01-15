@@ -24,7 +24,7 @@ export default function BuildForm({
   return (
     <div className="flex flex-col gap-2">
       <h2 className="text-lg font-semibold">Build form</h2>
-      <div className="flex flex-col gap-2">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
         <TextField
           label="Host"
           value={host}

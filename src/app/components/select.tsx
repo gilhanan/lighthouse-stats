@@ -3,6 +3,7 @@
 import { useId } from "react";
 
 interface Props<T> {
+  className?: string;
   label: string;
   idField: keyof T;
   nameField: keyof T;
@@ -12,6 +13,7 @@ interface Props<T> {
 }
 
 export default function Select<T>({
+  className,
   label,
   idField,
   nameField,
@@ -22,7 +24,7 @@ export default function Select<T>({
   const id = useId();
 
   return (
-    <div>
+    <div className={className}>
       <label htmlFor={id} className="block">
         {label}:
       </label>
