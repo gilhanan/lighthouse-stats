@@ -1,6 +1,7 @@
 import { Row } from "./models";
-import { TableBody } from "./table-body";
 import { TableHead } from "./table-head";
+import { TableBody } from "./table-body";
+import { TableFoot } from "./table-foot";
 
 interface Props {
   title: string;
@@ -14,6 +15,7 @@ export function Table({ title, rows }: Props) {
       <table className="table-auto">
         <TableHead cells={rows[0].cells} />
         <TableBody rows={rows} />
+        <TableFoot rows={rows} />
       </table>
     </div>
   );

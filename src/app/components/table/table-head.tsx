@@ -64,6 +64,7 @@ export function TableHead({ cells }: { cells: Cell[] }) {
 
     return (
       <tr key={rowIndex}>
+        <th></th>
         {currentCells.map((cell, cellIndex) => {
           const { label, value } = cell;
           const rowSpan = Array.isArray(value) ? 1 : maxDepth - rowIndex;

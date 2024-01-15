@@ -1,4 +1,5 @@
 import { Cell, Row } from "./models";
+import { flattenRows } from "./utils";
 
 type RowIndexedValue = { value: Cell["value"]; rowIndex: number };
 type CellIndexToSortedValues = {
@@ -48,29 +49,6 @@ function getCellIndexToMediansRowIndex(rows: Row[]): {
   }, {});
 }
 
-function flattenCells(cells: Cell[]): Cell[] {
-  const flatCells: Cell[] = [];
-
-  for (const cell of cells) {
-    if (Array.isArray(cell.value)) {
-      flatCells.push(...flattenCells(cell.value));
-    } else {
-      flatCells.push(cell);
-    }
-  }
-
-  return flatCells;
-}
-
-function flattenRows(rows: Row[]): Row[] {
-  const flattenRows = rows.map((row) => {
-    const cells = flattenCells(row.cells);
-    return { ...row, cells };
-  });
-
-  return flattenRows;
-}
-
 export function TableBody({ rows }: { rows: Row[] }) {
   const flattenedRows = flattenRows(rows);
   const cellIndexToMediansRowIndex =
@@ -81,6 +59,7 @@ export function TableBody({ rows }: { rows: Row[] }) {
       {flattenedRows.map(({ cells }, rowIndex) => {
         return (
           <tr key={rowIndex}>
+            <td></td>
             {cells.map(({ value }, cellIndex) => {
               const isMedian =
                 cellIndexToMediansRowIndex[cellIndex] === rowIndex;
