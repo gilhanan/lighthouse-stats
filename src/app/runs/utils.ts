@@ -44,7 +44,7 @@ export function calculateRuns({
                         },
                         {
                           label: "Score",
-                          value: score * 100,
+                          value: Math.round(score * 100),
                         },
                       ],
                     };
