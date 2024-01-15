@@ -1,80 +1,10 @@
 import { Cell, Row } from "./models";
-import { flattenRows } from "./utils";
-
-function getCellIndexToMedian(rows: Row[]): Record<number, number> {
-  const cellIndexToValues = rows.reduce((acc, { cells }) => {
-    cells.forEach(({ value }, cellIndex) => {
-      if (typeof value === "number") {
-        if (!acc[cellIndex]) {
-          acc[cellIndex] = [];
-        }
-        acc[cellIndex].push(value);
-      }
-    });
-    return acc;
-  }, {} as Record<number, number[]>);
-
-  const cellIndexToMedian = Object.entries(cellIndexToValues).reduce(
-    (acc, [index, values]) => {
-      const sortedValues = values.sort((a, b) => a - b);
-      const medianIndex = Math.floor(sortedValues.length / 2);
-      const median = sortedValues[medianIndex];
-      return { ...acc, [index]: median };
-    },
-    {} as Record<number, number>
-  );
-
-  return cellIndexToMedian;
-}
-
-function getCellIndexToSum(rows: Row[]): Record<number, number> {
-  const cellIndexToSum = rows.reduce((acc, { cells }) => {
-    cells.forEach(({ value }, cellIndex) => {
-      if (typeof value === "number") {
-        if (!acc[cellIndex]) {
-          acc[cellIndex] = 0;
-        }
-        acc[cellIndex] += value;
-      }
-    });
-    return acc;
-  }, {} as Record<number, number>);
-
-  return cellIndexToSum;
-}
-
-function getCellIndexToAverage(rows: Row[]): Record<number, number> {
-  const cellIndexToSum = getCellIndexToSum(rows);
-
-  const cellIndexToAverage = Object.entries(cellIndexToSum).reduce(
-    (acc, [index, sum]) => ({ ...acc, [index]: sum / rows.length }),
-    {} as Record<number, number>
-  );
-
-  return cellIndexToAverage;
-}
-
-function getCellIndexToDeviation(rows: Row[]): Record<number, number> {
-  const cellIndexToAverage = getCellIndexToAverage(rows);
-  const cellIndexToDeviationSum = rows.reduce((acc, { cells }) => {
-    cells.forEach(({ value }, cellIndex) => {
-      if (typeof value === "number") {
-        if (!acc[cellIndex]) {
-          acc[cellIndex] = 0;
-        }
-        acc[cellIndex] += Math.abs(value - cellIndexToAverage[cellIndex]);
-      }
-    });
-    return acc;
-  }, {} as Record<number, number>);
-
-  const cellIndexToDeviation = Object.entries(cellIndexToDeviationSum).reduce(
-    (acc, [index, sum]) => ({ ...acc, [index]: sum / rows.length }),
-    {} as Record<number, number>
-  );
-
-  return cellIndexToDeviation;
-}
+import {
+  flattenRows,
+  getCellIndexToAverage,
+  getCellIndexToDeviation,
+  getCellIndexToMedian,
+} from "./utils";
 
 function FooterRow({
   header,
@@ -83,7 +13,7 @@ function FooterRow({
 }: {
   header: string;
   cells: Cell[];
-  cellIndexToValue: Record<number, number>;
+  cellIndexToValue: Record<number, unknown>;
 }) {
   return (
     <tr>
@@ -113,7 +43,12 @@ export function TableFoot({ rows }: { rows: Row[] }) {
       <FooterRow
         header="Median"
         cells={cells}
-        cellIndexToValue={cellIndexToMedian}
+        cellIndexToValue={Object.fromEntries(
+          Object.entries(cellIndexToMedian).map(([key, { value }]) => [
+            key,
+            value,
+          ])
+        )}
       />
       <FooterRow
         header="Average"
