@@ -1,16 +1,15 @@
-import { Row } from "./models";
-import { flattenRows, getCellIndexToMedian } from "./utils";
+import { FlattenRow } from "./models";
+import { getCellIndexToMedian } from "./utils";
 
-export function TableBody({ rows }: { rows: Row[] }) {
-  const flattenedRows = flattenRows(rows);
-  const cellIndexToMediansRowIndex = getCellIndexToMedian(flattenedRows);
+export function TableBody({ rows }: { rows: FlattenRow[] }) {
+  const cellIndexToMediansRowIndex = getCellIndexToMedian(rows);
 
   return (
     <tbody>
-      {flattenedRows.map(({ id, cells }, rowIndex) => {
+      {rows.map(({ id, className, children, cells }, rowIndex) => {
         return (
-          <tr key={rowIndex}>
-            <td></td>
+          <tr key={rowIndex} className={className}>
+            <td>{children}</td>
             {cells.map(({ value }, cellIndex) => {
               const isMedian =
                 cellIndexToMediansRowIndex[cellIndex]?.rowIndex === rowIndex;
@@ -18,7 +17,7 @@ export function TableBody({ rows }: { rows: Row[] }) {
 
               return (
                 <td key={`${id}-${cellIndex}`} className={className}>
-                  {value?.toString()}
+                  {value}
                 </td>
               );
             })}

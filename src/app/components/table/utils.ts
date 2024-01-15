@@ -1,20 +1,24 @@
-import { Cell, Row } from "./models";
+import { Cell, FlattenCell, FlattenRow, Row } from "./models";
 
-export function flattenCells(cells: Cell[]): Cell[] {
-  const flatCells: Cell[] = [];
+function isFlattenCell(cell: Cell): cell is FlattenCell {
+  return !Array.isArray(cell.value);
+}
+
+export function flattenCells(cells: Cell[]): FlattenCell[] {
+  const flatCells: FlattenCell[] = [];
 
   for (const cell of cells) {
-    if (Array.isArray(cell.value)) {
-      flatCells.push(...flattenCells(cell.value));
-    } else {
+    if (isFlattenCell(cell)) {
       flatCells.push(cell);
+    } else {
+      flatCells.push(...flattenCells(cell.value as Cell[]));
     }
   }
 
   return flatCells;
 }
 
-export function flattenRows(rows: Row[]): Row[] {
+export function flattenRows(rows: Row[]): FlattenRow[] {
   const flattenRows = rows.map((row) => {
     const cells = flattenCells(row.cells);
     return { ...row, cells };

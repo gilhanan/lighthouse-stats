@@ -74,6 +74,9 @@ export interface Category {
 }
 
 export interface LHR {
+  fetchTime: string;
+  requestedUrl: string;
+  lighthouseVersion: string;
   environment: {
     benchmarkIndex: number;
   };

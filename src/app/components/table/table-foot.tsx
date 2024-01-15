@@ -1,6 +1,5 @@
-import { Cell, Row } from "./models";
+import { Cell, FlattenRow } from "./models";
 import {
-  flattenRows,
   getCellIndexToAverage,
   getCellIndexToDeviation,
   getCellIndexToMedian,
@@ -31,12 +30,11 @@ function FooterRow({
   );
 }
 
-export function TableFoot({ rows }: { rows: Row[] }) {
-  const flattenedRows = flattenRows(rows);
-  const cells = flattenedRows[0]?.cells || [];
-  const cellIndexToMedian = getCellIndexToMedian(flattenedRows);
-  const cellIndexToAverage = getCellIndexToAverage(flattenedRows);
-  const cellIndexToDeviation = getCellIndexToDeviation(flattenedRows);
+export function TableFoot({ rows }: { rows: FlattenRow[] }) {
+  const cells = rows[0]?.cells || [];
+  const cellIndexToMedian = getCellIndexToMedian(rows);
+  const cellIndexToAverage = getCellIndexToAverage(rows);
+  const cellIndexToDeviation = getCellIndexToDeviation(rows);
 
   return (
     <tfoot className="border">
