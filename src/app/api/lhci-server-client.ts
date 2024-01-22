@@ -33,7 +33,7 @@ function lighthouseServerBuilds({
   project,
   branch,
 }: BranchParams): string {
-  const params = new URLSearchParams({ branch });
+  const params = new URLSearchParams({ branch, limit: "100" });
   return `${lighthouseServerProject({
     host,
     project,
