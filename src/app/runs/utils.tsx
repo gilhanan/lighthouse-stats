@@ -11,6 +11,7 @@ export function calculateRuns({
 }) {
   const rows = runs.map(({ id, representative, lhr }) => {
     const {
+      fetchTime,
       environment: { benchmarkIndex },
       audits,
       categories,
@@ -21,6 +22,7 @@ export function calculateRuns({
       className: representative ? "border" : "",
       children: <LhrViewerLink lhr={lhr} />,
       cells: [
+        { label: "Fetch Time", value: fetchTime },
         { label: "Benchmark", value: Math.round(benchmarkIndex) },
         ...(currentCategory
           ? [
