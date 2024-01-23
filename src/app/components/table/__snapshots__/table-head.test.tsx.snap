@@ -4,6 +4,7 @@ exports[`renders homepage unchanged 1`] = `
 <div>
   <thead>
     <tr>
+      <th />
       <th
         class="text-center border p-2 bg-gray-50"
         colspan="1"
@@ -34,6 +35,7 @@ exports[`renders homepage unchanged 1`] = `
       </th>
     </tr>
     <tr>
+      <th />
       <th
         class="text-center border p-2 bg-gray-50"
         colspan="1"
@@ -85,6 +87,7 @@ exports[`renders homepage unchanged 1`] = `
       </th>
     </tr>
     <tr>
+      <th />
       <th
         class="text-center border p-2 bg-gray-50"
         colspan="1"
